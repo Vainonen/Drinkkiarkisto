@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Drinkkiarkisto</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="../css/bootstrap.css" rel="stylesheet">
+        <link href="../css/bootstrap-theme.css" rel="stylesheet">
+        <link href="../css/main.css" rel="stylesheet">
+    </head>
+    <body>
+
+         <div class="container">
+    <div class="row">
+      <div class="col-md-3">
+        
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <h2><a href="etusivu.html">DRINKKIARKISTO</a></h2>
+        <div class="container">
+            <h3>
+            <a href="#">Drinkkityypit |</a>
+            <a href="#"> Ainesosat |</a>
+            <a href="listaus.html"> Listaa kaikki</a> 
+            </h3>
+  
+            <p style="text-align:right">
+            <a href="kirjautuminen.html">Kirjaudu |</a>
+            <a href="#">Rekisteröidy</a>
+            </p>
+                  
+            
+        </div>
+        </nav>
+        </div>
+      </div>
+       </div>
+        
+ 
+    <div class="container">
+        <br><br><br><br><br><br><br>
+    <h2>Lisää drinkkiresepti</h2>
+    <form class="form-horizontal" role="form" action="lomake.html" method="POST">
+      <div class="form-group">
+        <label for="nimi" class="col-md-2 control-label">Drinkin nimi</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" id="inputNimi1">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="aliakset" class="col-md-2 control-label">Vaihtoehtoiset nimet (erota pilkuin) </label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" id="inputAliakset1">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="tyyppi" class="col-md-2 control-label">Drinkkityyppi </label>
+        <div class="col-md-10">
+        <div class="btn-group">
+            <button type="button" class="btn btn-default">Cocktail</button>
+            <button type="button" class="btn btn-default">Shotti</button>
+            <button type="button" class="btn btn-default">Long Drink</button>
+        </div>
+        </div>
+        </div>
+      <div class="form-group">
+        <label for="ainesosa" class="col-md-2 control-label">Ainesosa </label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" id="inputAinesosa1">
+          <button type="button" class="btn btn-default">Lisää aineksia</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+          <button type="submit" class="btn btn-default">Tallenna resepti</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
