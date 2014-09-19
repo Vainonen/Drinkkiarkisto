@@ -1,51 +1,37 @@
+CREATE TABLE kayttajat
+(
+id SERIAL PRIMARY KEY NOT NULL, 
+tunnus varchar(255),
+salasana varchar(255),
+muokkausoikeus boolean,
+adminoikeus boolean
+); 
+
+CREATE TABLE drinkit
+(
+drinkki_id SERIAL PRIMARY KEY NOT NULL, 
+nimi varchar(255),
+aliakset varchar(255),
+drinkkityyppi varchar(255),
+valmistustapa varchar(255)
+); 
+
 CREATE TABLE raakaaineet
 (
 aine_id SERIAL PRIMARY KEY NOT NULL, 
-Nimi varchar(255),
+nimi varchar(255)
+);
+
+CREATE TABLE muokkaajat
+(
+id integer REFERENCES kayttajat (id),
+drinkki_id integer REFERENCES drinkit (drinkki_id),
+aika timestamp
 );
 
 CREATE TABLE ainesosat
 (
-Tilavuus int,
-CONSTRAINT kohdejuoma_id integer FOREIGN KEY (DrinkkiID)
-      REFERENCES drinkit (DrinkkiID)
-      ON UPDATE CASCADE ON DELETE CASCADE
-CONSTRAINT neste_id integer FOREIGN KEY (aine_id)
-      REFERENCES raakaaineet (aine_id)
-      ON UPDATE CASCADE ON DELETE CASCADE
+tilavuus int,
+drinkki_id integer REFERENCES drinkit (drinkki_id),
+aine_id integer REFERENCES raakaaineet (aine_id)
 );
-
-CREATE TABLE drinkit
-(
-DrinkkiID SERIAL PRIMARY KEY NOT NULL, 
-Nimi varchar(255),
-Aliakset varchar(255),
-Drinkkityyppi varchar(255),
-Valmistustapa varchar(255),
-CONSTRAINT ainesosa integer FOREIGN KEY (aines_id)
-      REFERENCES ainesosat (aines_id)
-      ON UPDATE CASCADE ON DELETE CASCADE
-CONSTRAINT muokkaaja integer FOREIGN KEY (juoma)
-      REFERENCES muokkaajat (juoma)
-      ON UPDATE CASCADE ON DELETE CASCADE
-); 
-
-CREATE TABLE muokkaajat
-(
-CONSTRAINT henk_tunnus integer FOREIGN KEY (user_id)
-      REFERENCES users (user_id)
-      ON UPDATE CASCADE ON DELETE CASCADE
-CONSTRAINT juoma integer FOREIGN KEY (DrinkkiID)
-      REFERENCES drinkit (DrinkkiID)
-      ON UPDATE CASCADE ON DELETE CASCADE
-Aika timestamp;
-);
-
-CREATE TABLE users
-(
-user_id SERIAL PRIMARY KEY NOT NULL, 
-Tunnus varchar(255),
-Salasana varchar(255),
-Muokkausoikeus boolean,
-Adminoikeus boolean,
-); 
