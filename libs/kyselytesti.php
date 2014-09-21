@@ -1,10 +1,10 @@
 <?php
-require 'tietokantayhteys.php';
-require 'kayttaja.php';
+require_once 'tietokantayhteys.php';
+require_once 'models/kayttaja.php';
+
 $sql = "SELECT id, tunnus, salasana, muokkausoikeus, adminoikeus from kayttajat";
 $kysely = getTietokantayhteys()->prepare($sql);
 $kysely->execute();
-
 $rivit = $kysely->fetchAll();
 echo $rivit[0]['id'];
 echo $rivit[0]['tunnus'];

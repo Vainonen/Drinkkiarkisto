@@ -1,4 +1,5 @@
 <?php
+require_once 'libs/tietokantayhteys.php';
 class Kayttaja {
   
   private $id;
@@ -38,8 +39,8 @@ $this->id = $id;
 public function setTunnus($tunnus) {
 $this->tunnus = $tunnus;
 }
-public function setSalasana($Salasana) {
-$this->salasana = $Salasana;
+public function setSalasana($salasana) {
+$this->salasana = $salasana;
 }
 public function setMuokkausoikeus() {
 $this->muokkausoikeus = $muokkausoikeus;
@@ -47,4 +48,22 @@ $this->muokkausoikeus = $muokkausoikeus;
 public function setAdminoikeus() {
 $this->adminoikeus = $adminoikeus;
 }
+
+  public static function etsiKayttajaTunnuksilla($kayttaja, $salasana) {
+    $sql = "SELECT id, tunnus, salasana from kayttajat where tunnus = ? AND salasana = ? LIMIT 1";
+    $kysely = getTietokantayhteys()->prepare($sql);
+    $kysely->execute(array($kayttaja, $salasana));
+
+    $tulos = $kysely->fetchObject();
+    if ($tulos == null) {
+      return null;
+    } else {
+      $kayttaja = new Kayttaja(); 
+      $kayttaja->setId($tulos->id);
+      $kayttaja->setTunnus($tulos->tunnus);
+      $kayttaja->setSalasana($tulos->salasana);
+
+      return $kayttaja;
+    }
+  }
 }
