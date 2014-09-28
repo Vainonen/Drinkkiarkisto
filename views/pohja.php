@@ -18,7 +18,8 @@
             <h3>
             <a href="#">Drinkkityypit |</a>
             <a href="#"> Ainesosat |</a>
-            <a href="listaus.html"> Listaa kaikki</a> 
+            <a href="drinkit.php"> Listaa kaikki |</a>
+            <a href="insert.php"> Lisää drinkki</a> 
             </h3>
             <p style="text-align:right">
 
@@ -37,7 +38,17 @@
              <br><br><br><br><br><br><br><br><br><br><br><br><br><br>   
                <?php if (!empty($data->virhe)): ?>
                <div class="alert alert-danger"><?php echo $data->virhe; ?></div>
-               <?php endif; ?>  
+               <?php endif; ?>
+               <?php if (!empty($_SESSION['ilmoitus'])): ?>
+                <div class="alert alert-danger">
+                <?php echo $_SESSION['ilmoitus']; ?>
+                </div>
+                <?php
+                // Samalla kun viesti näytetään, se poistetaan istunnosta,
+                // ettei se näkyisi myöhemmin jollain toisella sivulla uudestaan.
+                unset($_SESSION['ilmoitus']); ?>
+                <?php endif;?>
+               
                <?php            
                require_once 'views/'.$sivu;
                ?>

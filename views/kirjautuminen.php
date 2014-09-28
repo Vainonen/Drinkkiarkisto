@@ -30,11 +30,7 @@
       </div>
     </form>
   </div>
-<?php
-  require_once 'libs/common.php';
-  require_once 'models/kayttaja.php';
-  require_once 'users.php';
- ?>   
+ 
 <?php if (!empty($data->virhe)): ?>
   <div class="alert alert-danger"><?php echo $data->virhe; ?></div>
 <?php endif; ?>

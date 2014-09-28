@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'libs/common.php';
-require 'libs/models/kayttaja.php';
+require_once 'libs/models/kayttaja.php';
   //Tarkistetaan että vaaditut kentät on täytetty:
   if (empty($_POST["username"])) {
     naytaNakyma('kirjautuminen.php', array(

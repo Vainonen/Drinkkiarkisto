@@ -2,18 +2,18 @@
 require_once 'libs/tietokantayhteys.php';
 class Raakaaine {
   
-  private $aine_id;
+  private $id;
   private $nimi;
 
  
-  public function __construct($aine_id, $nimi) {
-    $this->aine_id = $aine_id;
+  public function __construct($id, $nimi) {
+    $this->id = $id;
     $this->nimi = $nimi;
   }
 
 /* Kirjoita tähän gettereitä ja settereitä */
 public function getAineId() {
-return $this->aine_id;
+return $this->id;
 }
 public function getNimi() {
 return $this->nimi;
@@ -21,7 +21,7 @@ return $this->nimi;
 
 
 public function setAineId($id) {
-$this->aine_id = $aine_id;
+$this->id = $id;
 }
 public function setNimi($nimi) {
 $this->nimi = $nimi;
