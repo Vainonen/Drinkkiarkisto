@@ -1,8 +1,8 @@
    <div class="container">
-        <br><br><br><br><br><br><br>
+        
     <h2>Muokkaa drinkkireseptiä</h2>
     <?php foreach($data->drinkki as $drinkki): ?>
-    <form class="form-horizontal" role="form" action="muokkaus.php?id=<?php echo $drinkki->getDrinkkiId() ?>" method="POST">
+    <form class="form-horizontal" role="form" action="muokkaus.php?drinkki_id=<?php echo $drinkki->getDrinkkiId() ?>" method="POST">
       <div class="form-group">
         <label for="nimi" class="col-md-2 control-label">Drinkin nimi</label>
         <div class="col-md-10">
@@ -23,9 +23,9 @@
         <label for="tyyppi" class="col-md-2 control-label">Drinkkityyppi </label>
         <div class="col-md-10">
         <div class="btn-group">
-            <input type="radio" name="drinkkityyppi" value="Cocktail"> Cocktail
-            <input type="radio" name="drinkkityyppi" value="Shotti"> Shotti
-            <input type="radio" name="drinkkityyppi" value="Long Drink"> Long Drink
+            <input type="radio" name="drinkkityyppi" value="Cocktail" <?php if ($drinkki->getDrinkkityyppi()=="Cocktail") print 'checked'; ?>> Cocktail
+            <input type="radio" name="drinkkityyppi" value="Shotti" <?php if ($drinkki->getDrinkkityyppi()=="Shotti") print 'checked'; ?>> Shotti
+            <input type="radio" name="drinkkityyppi" value="Long Drink" <?php if ($drinkki->getDrinkkityyppi()=="Long Drink") print 'checked'; ?>> Long Drink
         </div>
         </div>
         </div>

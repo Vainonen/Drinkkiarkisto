@@ -1,11 +1,12 @@
 <?php
-session_start();
+// kontrolleri, joka poistaa drinkkireseptin tietokannasta 
+
 require_once 'libs/common.php';
 require_once 'libs/models/drinkki.php';
 
- if (kirjautunutko()) {
+ if (oikeusMuokata()) {
     //Koodia, jonka vain kirjautunut käyttäjä saa suorittaa
-Drinkki::poistaDrinkki($_GET['id']);
+Drinkki::poistaDrinkki(sanitoi($_GET['drinkki_id']));
  naytaNakyma('kirjautuminen.php', array(
       'virhe' => "Drinkki poistettu arkistosta!"
   ));

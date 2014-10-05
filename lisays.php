@@ -1,21 +1,32 @@
 <?php
-session_start();
+/* kontrolleri, joka tarkistaa, että käyttäjän antama reseptilisäys on 
+   kunnollinen */
+
 require_once 'libs/common.php';
 require_once 'libs/models/drinkki.php';
+require_once 'libs/models/raakaaine.php';
 
+$uusi=($_POST['tilavuus']);
+echo($uusi[0]);
+$aine=($_POST['raakaaine']);
+echo($aine[0]);
+
+/*
 $uusi = new Drinkki();
-$uusi->setNimi($_POST['nimi']);
-$uusi->setAliakset($_POST['aliakset']);
-$uusi->setDrinkkityyppi($_POST['drinkkityyppi']);
-$uusi->setValmistustapa($_POST['valmistustapa']);
+$uusi->setNimi(sanitoi($_POST['nimi']));
+$uusi->setAliakset(sanitoi($_POST['aliakset']));
+$uusi->setDrinkkityyppi(sanitoi($_POST['drinkkityyppi']));
+$uusi->setValmistustapa(sanitoi($_POST['valmistustapa']));
+
+
+
 
 if ($uusi->onkoKelvollinen()) {
   $uusi->lisaaKantaan();
   
-  //Kissa lisättiin kantaan onnistuneesti, lähetetään käyttäjä eteenpäin
+  //Drinkki lisättiin kantaan onnistuneesti, lähetetään käyttäjä eteenpäin
   header('Location: drinkit.php');
-  //Asetetaan istuntoon ilmoitus siitä, että kissa on lisätty.
-  //Tästä tekniikasta kerrotaan lisää kohta
+  //Asetetaan istuntoon ilmoitus siitä, että drinkki on lisätty.
   $_SESSION['ilmoitus'] = "Drinkki lisätty onnistuneesti.";
 
 } else {
@@ -28,3 +39,5 @@ if ($uusi->onkoKelvollinen()) {
     'virheet' => $virheet
   ));
 }
+ */
+ 

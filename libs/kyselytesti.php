@@ -1,18 +1,16 @@
 <?php
-require_once 'tietokantayhteys.php';
-require_once 'models/kayttaja.php';
+require_once '../libs/tietokantayhteys.php';
 
 
-$sql = "SELECT id, tunnus, salasana from kayttajat";
+$sql = "SELECT kayttaja_id, tunnus, salasana from kayttajat WHERE kayttaja_id=0";
 $kysely = getTietokantayhteys()->prepare($sql);
 $kysely->execute();
-$rivit = $kysely->fetchAll();
-echo $rivit[0]['id'];
-echo $rivit[0]['tunnus'];
-echo $rivit[0]['salasana'];
-echo $rivit[1]['id'];
-echo $rivit[1]['tunnus'];
-echo $rivit[1]['salasana'];
+$rivit[0] = $kysely->fetchColumn(0);
+$rivit[1] = $kysely->fetchColumn(1);
+
+echo $rivit[0];
+echo $rivit[1];
+
 
  
 

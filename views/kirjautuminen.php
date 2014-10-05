@@ -1,5 +1,5 @@
  <div class="container">
-        <br><br><br><br><br><br><br>
+      
     <h2>Kirjaudu</h2>
     <form class="form-horizontal" role="form" action="users.php" method="POST">
       <div class="form-group">

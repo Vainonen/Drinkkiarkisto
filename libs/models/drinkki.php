@@ -2,15 +2,14 @@
 require_once 'libs/tietokantayhteys.php';
 class Drinkki {
   
-  private $id;
+  private $drinkki_id;
   private $nimi;
   private $aliakset;
   private $drinkkityyppi;
   private $valmistustapa;
-  private $virheet;
-       
-  public function __construct($id, $nimi, $aliakset, $drinkkityyppi, $valmistustapa, $virheet) {
-    $this->id = $id;
+  
+  public function __construct($drinkki_id, $nimi, $aliakset, $drinkkityyppi, $valmistustapa, $ainesosat, $virheet) {
+    $this->drinkki_id = $drinkki_id;
     $this->nimi = $nimi;
     $this->aliakset = $aliakset;
     $this->drinkkityyppi = $drinkkityyppi;
@@ -18,9 +17,9 @@ class Drinkki {
     $this->virheet = $virheet;
   }
 
-/* Kirjoita tähän gettereitä ja settereitä */
+/* gettereitä ja settereitä */
 public function getDrinkkiId() {
-    return $this->id;
+    return $this->drinkki_id;
 }
 public function getNimi() {
     return $this->nimi;
@@ -38,8 +37,8 @@ public function getVirheet() {
     return $this->virheet;
 }
 
-public function setDrinkkiId($id) {
-    $this->id = $id;
+public function setDrinkkiId($drinkki_id) {
+    $this->drinkki_id = $drinkki_id;
 }
 public function setNimi($nimi) {
     $this->nimi = $nimi;
@@ -52,7 +51,6 @@ public function setNimi($nimi) {
 public function setAliakset($aliakset) {
     $this->aliakset = $aliakset;
     }
-
 public function setDrinkkityyppi($drinkkityyppi) {
     $this->drinkkityyppi = $drinkkityyppi;
     }
@@ -60,34 +58,30 @@ public function setValmistustapa($valmistustapa) {
     $this->valmistustapa = $valmistustapa;
     }
 
-
-
- function etsi($id) {
-    $sql = "SELECT id, nimi, aliakset, drinkkityyppi, 
-          valmistustapa FROM drinkit WHERE id = ?";
+ /* etsii drinkin tiedot postgresql-tietokannasta id-tunnuksen mukaan */
+ function etsi($drinkki_id) {
+    $sql = "SELECT drinkki_id, nimi, aliakset, drinkkityyppi, 
+          valmistustapa FROM drinkit WHERE drinkki_id = ?";
     $kysely = getTietokantayhteys()->prepare($sql);
-    $kysely->execute(array($id));
+    $kysely->execute(array($drinkki_id));
     $tulos = $kysely->fetchObject();
      $tulokset = array();
-    if ($tulos == null) {
-        return null;
-        }
+    if ($tulos == null) return null;
     else {
-      $drinkki = new Drinkki($tulos->id, $tulos->nimi, $tulos->aliakset,
+      $drinkki = new Drinkki($tulos->drinkki_id, $tulos->nimi, $tulos->aliakset,
         $tulos->drinkkityyppi, $tulos->valmistustapa);      
-      $drinkki->setDrinkkiId($tulos->id);
+      $drinkki->setDrinkkiId($tulos->drinkki_id);
       $drinkki->setNimi($tulos->nimi);
       $drinkki->setAliakset($tulos->aliakset);
       $drinkki->setDrinkkityyppi($tulos->drinkkityyppi);
       $drinkki->setValmistustapa($tulos->valmistustapa);
       $tulokset[] = $drinkki;
-      return $tulokset;
-    }
-        
+      return $tulokset;}     
  }
-        
+  
+  /* etsii drinkkiä nimeltä nimi- ja aliaskentistä (KESKENERÄINEN) */
   public static function etsiNimi($nimi) {
-    $sql = "SELECT id, nimi, aliakset, drinkkityyppi, 
+    $sql = "SELECT drinkki_id, nimi, aliakset, drinkkityyppi, 
           valmistustapa FROM drinkit WHERE nimi = ?";
     $kysely = getTietokantayhteys()->prepare($sql);
     $kysely->execute(array($nimi));
@@ -98,9 +92,9 @@ public function setValmistustapa($valmistustapa) {
         }
 
     else {
-      $drinkki = new Drinkki($tulos->id, $tulos->nimi, $tulos->aliakset,
+      $drinkki = new Drinkki($tulos->drinkki_id, $tulos->nimi, $tulos->aliakset,
         $tulos->drinkkityyppi, $tulos->valmistustapa);      
-        $drinkki->setDrinkkiId($tulos->id);
+        $drinkki->setDrinkkiId($tulos->drinkki_id);
         $drinkki->setNimi($tulos->nimi);
         $drinkki->setAliakset($tulos->aliakset);
         $drinkki->setDrinkkityyppi($tulos->drinkkityyppi);
@@ -110,15 +104,16 @@ public function setValmistustapa($valmistustapa) {
     }
   }
   
+  /* etsii kaikki reseptit tietokannasta ja palauttaa ne taulukkona */
   public static function etsiKaikkiDrinkit() {
-    $sql = "SELECT id, nimi, aliakset, drinkkityyppi, 
+    $sql = "SELECT drinkki_id, nimi, aliakset, drinkkityyppi, 
           valmistustapa FROM drinkit";
     $kysely = getTietokantayhteys()->prepare($sql); $kysely->execute();
     
     $tulokset = array();
     foreach($kysely->fetchAll(PDO::FETCH_OBJ) as $tulos) {
         $drinkki = new Drinkki();
-        $drinkki->setDrinkkiId($tulos->id);
+        $drinkki->setDrinkkiId($tulos->drinkki_id);
         $drinkki->setNimi($tulos->nimi);
         $drinkki->setAliakset($tulos->aliakset);
         $drinkki->setDrinkkityyppi($tulos->drinkkityyppi);
@@ -131,14 +126,7 @@ public function setValmistustapa($valmistustapa) {
   return $tulokset;
 }
 
-  public static function haeRivi() {
-  $sql = "SELECT id, nimi, aliakset, drinkkityyppi, 
-          valmistustapa FROM drinkit";
-  $kysely = getTietokantayhteys()->prepare($sql);
-    $assosiaatiotaulu = $kysely->fetch();
-    echo $assosiaatiotaulu['nimi']; 
-  }
-  
+  /* getteri drinkkien lukumäärälle */
   public static function lukumaara() {
     $sql = "SELECT count(*) FROM drinkit";
     $kysely = getTietokantayhteys()->prepare($sql);
@@ -146,6 +134,9 @@ public function setValmistustapa($valmistustapa) {
     return $kysely->fetchColumn();
     }
 
+  /* getteri näkymää varten, parametreinä sivunumero ja sivulla esitettävien
+   * drinkkien lukumäärä
+   */
   public static function getDrinkitSivulla ($sivu, $montako) {
     $sql = "SELECT * FROM drinkit ORDER by nimi LIMIT ? OFFSET ?";
     $kysely = getTietokantayhteys()->prepare($sql);
@@ -153,43 +144,39 @@ public function setValmistustapa($valmistustapa) {
     $tulokset = array();
     foreach($kysely->fetchAll(PDO::FETCH_OBJ) as $tulos) {
         $drinkki = new Drinkki();
-        $drinkki->setDrinkkiId($tulos->id);
+        $drinkki->setDrinkkiId($tulos->drinkki_id);
         $drinkki->setNimi($tulos->nimi);
         $drinkki->setAliakset($tulos->aliakset);
         $drinkki->setDrinkkityyppi($tulos->drinkkityyppi);
         $drinkki->setValmistustapa($tulos->valmistustapa);
 
-    //$array[] = $muuttuja; lisää muuttujan arrayn perään. 
-    //Se vastaa melko suoraan ArrayList:in add-metodia.
     $tulokset[] = $drinkki;
   }
   return $tulokset;
   }
   
+  /* lisää reseptin postgresql-tietokantaan, joka huolehtii drinkki_id-muuttujan 
+     lisäämisestä */
   public function lisaaKantaan() {
     $sql = "INSERT INTO drinkit (nimi, aliakset, drinkkityyppi, valmistustapa) VALUES(?,?,?,?)";
-    $kysely = getTietokantayhteys()->prepare($sql);
+    $kysely = getTietokantayhteys()->prepare($sql); 
+    $ok = $kysely->execute(array($this->getNimi(), $this->getAliakset(), $this->getDrinkkityyppi(), $this->getValmistustapa())); 
+    if ($ok)  $this->drinkki_id = $kysely->fetchColumn();
     
-    $ok = $kysely->execute(array($this->getNimi(), $this->getAliakset(), $this->getDrinkkityyppi(), $this->getValmistustapa()));
-    
-    if ($ok) {
-      //Haetaan RETURNING-määreen palauttama id.
-      //HUOM! Tämä toimii ainoastaan PostgreSQL-kannalla!
-      $this->id = $kysely->fetchColumn();
+    return $ok;
+  }
+   
+    /* päivittää tietokantaan muutokset drinkki_id-indeksinumeron perusteella */
+    public function muokkaaKantaa($drinkki_id) {
+        $sql = "UPDATE drinkit SET nimi = ?, aliakset = ?, drinkkityyppi = ?, valmistustapa = ? WHERE drinkki_id = $drinkki_id";
+        $kysely = getTietokantayhteys()->prepare($sql);
+        $ok = $kysely->execute(array($this->getNimi(), $this->getAliakset(), $this->getDrinkkityyppi(), $this->getValmistustapa()));
+        return $ok;
     }
-    return $ok;
-  }
-  
-    public function muokkaaKantaa($id) {
-    $sql = "UPDATE drinkit SET nimi = ?, aliakset = ?, drinkkityyppi = ?, valmistustapa = ? WHERE id = $id";
-    $kysely = getTietokantayhteys()->prepare($sql);
-    
-    $ok = $kysely->execute(array($this->getNimi(), $this->getAliakset(), $this->getDrinkkityyppi(), $this->getValmistustapa()));
- 
-    return $ok;
-  }
-   public function poistaDrinkki($id) {
-    $sql = "DELETE FROM drinkit WHERE id = $id";
+   
+   /* poistaa reseptin tietokannasta drinkki_id-indeksinumeron perusteella */
+   public function poistaDrinkki($drinkki_id) {
+    $sql = "DELETE FROM drinkit WHERE drinkki_id = $drinkki_id";
     $kysely = getTietokantayhteys()->prepare($sql);
     $kysely->execute();
   }

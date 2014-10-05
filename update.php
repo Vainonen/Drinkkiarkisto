@@ -1,11 +1,15 @@
 <?php
-session_start();
+/*lataa drinkkireseptin muokkauslomakkeen ja tarkistaa, että onko
+ * käyttäjällä muokkausoikeus
+ */
+
 require_once 'libs/common.php';
 require_once 'libs/models/drinkki.php';
+require_once 'libs/models/raakaaine.php';
 
- if (kirjautunutko()) {
+ if (oikeusMuokata()) {
     //Koodia, jonka vain kirjautunut käyttäjä saa suorittaa
- $drinkki = Drinkki::etsi($_GET['id']);
+ $drinkki = Drinkki::etsi(sanitoi($_GET['drinkki_id']));
   if ($drinkki != null) {
   naytaNakyma("drinkkimuokkaus.php", array(
     'drinkki' => $drinkki
@@ -17,6 +21,11 @@ require_once 'libs/models/drinkki.php';
   ));
     }
  }
-else {naytaNakyma('kirjautuminen.php', array(
+else if (kirjautunutko() && !oikeusMuokata()) 
+    naytaNakyma('kirjautuminen.php', array(  
+      'virhe' => "Et voi muokata reseptejä ennen kuin olet hankkinut oikeudet moderaattorilta!",
+));
+    
+else {naytaNakyma('kirjautuminen.php', array( 
       'virhe' => "Et voi muokata reseptejä ennen kuin kirjaudut tunnuksillasi!",
 ));}

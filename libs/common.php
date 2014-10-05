@@ -12,17 +12,38 @@
     require_once 'views/pohja.php';
     exit();
   }
-  
-  function kirjautunutko() {
+ 
+   /* Tarkistaa onko käyttäjä kirjautunut */
+   function kirjautunutko() {
       if (isset($_SESSION['kirjautunut'])) 
     return true;
     else return false;
-    
- 
-    
+  }
+  
+  /* Tarkistaa onko käyttäjällä oikeus muokauta drinkkireseptejä */
+  function oikeusMuokata() {
+      if (isset($_SESSION['muokkausoikeus']))
+    return true;
+    else return false;
+  }
+  
+  /* Tarkistaa onko käyttäjällä oikeus muokata muiden käyttäjien tietoja */
+  function oikeusModeroida() {
+      if (isset($_SESSION['adminoikeus']))
+    return true;
+    else return false;
+  }
+  
+  /* Käyttäjän uloskirjautuminen, tietojen ja evästeen poistaminen sessiosta */
   function kirjauduUlos () {
-      unset($_SESSION["kirjautunut"]);
-  //Yleensä kannattaa ulkos kirjautumisen jälkeen ohjata käyttäjä kirjautumissivulle
+      session_start();
+      $_SESSION = array();
+      setcookie(session_name(), '', time() - 2592000, '/');
+      session_destroy();
   header('Location: login.php');
   }
-  }
+  
+  /* huolehtii käyttäjän syötteiden puhdistamisesta */
+  function sanitoi($merkit) {
+    return htmlspecialchars(trim($merkit));
+  } 

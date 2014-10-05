@@ -1,9 +1,9 @@
 <div class="container">
-        <br><br><br><br><br><br><br>
+        
     <h2>Drinkit</h2>
     <?php foreach($data->drinkit as $drinkki): ?>
 <div class="drinkki">
-<a href="search.php?id=<?php echo $drinkki->getDrinkkiId() ?>"><?php echo $drinkki->getNimi() ?></a>
+<a href="search.php?drinkki_id=<?php echo $drinkki->getDrinkkiId() ?>"><?php echo $drinkki->getNimi() ?></a>
 <?php endforeach; ?>
 <br><br>
 <?php if ($data->sivu > 1): ?>
