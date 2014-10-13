@@ -24,18 +24,20 @@ nimi varchar(255)
 
 CREATE TABLE muokkaajat
 (
-muokkaaja_id integer REFERENCES kayttajat (kayttaja_id)
-ON DELETE cascade,
-muokattu_id integer REFERENCES drinkit (drinkki_id)
-ON DELETE cascade,
+kayttaja_id integer REFERENCES kayttajat (kayttaja_id)
+ON DELETE cascade
+ON UPDATE cascade,
+drinkki_id integer REFERENCES drinkit (drinkki_id)
+ON DELETE cascade
+ON UPDATE cascade,
 aika timestamp
 );
 
 CREATE TABLE ainesosat
 (
 tilavuus integer,
-kohde_id integer REFERENCES drinkit (drinkki_id)
-ON DELETE cascade,
-aine_id integer REFERENCES raakaaineet (raakaaine_id)
+drinkki_id integer REFERENCES drinkit (drinkki_id),
+raakaaine_id integer REFERENCES raakaaineet (raakaaine_id)
 ON DELETE cascade
+ON UPDATE cascade
 );
