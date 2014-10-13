@@ -3,7 +3,6 @@
  * eli käyttäjätunnuksen ja salasanan
  */
 
-session_start();
 require_once 'libs/common.php';
 require_once 'libs/models/kayttaja.php';
   //Tarkistetaan että vaaditut kentät on täytetty:
@@ -30,7 +29,8 @@ require_once 'libs/models/kayttaja.php';
     if ($kayttaja->getMuokkausoikeus()==true) $_SESSION['muokkausoikeus'] = true;
     if ($kayttaja->getAdminoikeus()==true) $_SESSION['adminoikeus'] = true;
     $_SESSION['kayttajatunnus'] = $kayttaja->getTunnus();
-    header('Location: login.php');
+    $_SESSION['id'] = $kayttaja->getId();
+    header('Location: drinkit.php');
     
 
   } else {

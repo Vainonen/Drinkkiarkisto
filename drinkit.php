@@ -2,6 +2,7 @@
   /* Kontrolleri, joka näyttää listauksen kaikista drinkkiresepteistä */
   require_once 'libs/common.php';
   require_once 'libs/models/drinkki.php';
+  require_once 'libs/models/raakaaine.php';
   
   $sivu = 1;
   if (isset($_GET['sivu'])) {

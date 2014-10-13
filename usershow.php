@@ -17,7 +17,7 @@
   $sivuja = ceil($lkm/$montakosivulla);
   
   if (oikeusModeroida()) {
-  $drinkit = Kayttaja::getKayttajatSivulla ($sivu, $montakosivulla);
+  $kayttajat = Kayttaja::getKayttajatSivulla ($sivu, $montakosivulla);
   naytaNakyma('kayttajalista.php', array(
     'kayttajat' => $kayttajat,
     'sivu' => $sivu,

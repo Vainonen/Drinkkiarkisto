@@ -4,13 +4,14 @@
   require_once 'libs/common.php';
   require_once 'libs/models/drinkki.php';
   require_once 'libs/models/raakaaine.php';
-  
  
   $drinkki = Drinkki::etsi(sanitoi($_GET['drinkki_id']));
- 
+  $ainesosat = Raakaaine::etsiAinesosat(sanitoi($_GET['drinkki_id']));
+
   if ($drinkki != null) {
   naytaNakyma("drinkkitieto.php", array(
-    'drinkki' => $drinkki
+    'drinkki' => $drinkki,
+    'ainesosat' => $ainesosat
   ));
 } else {
   naytaNakyma("drinkkitieto.php", array(
@@ -18,3 +19,4 @@
     'virhe' => "Drinkkiä ei löytynyt!"
   ));
 }
+   
