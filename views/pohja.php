@@ -17,7 +17,7 @@
         <div class="container">
             <h3>
             <a href="#">Drinkkityypit |</a>
-            <a href="#"> Ainesosat |</a>
+            <a href="ainekset.php"> Ainesosat |</a>
             <a href="drinkit.php"> Listaa kaikki |</a>
             <a href="insert.php"> Lisää drinkki</a> 
             <?php if (oikeusModeroida()): ?>
@@ -32,17 +32,15 @@
             <?php endif; ?>
             <?php if (!kirjautunutko()): ?>
             <a href="login.php">Kirjaudu |</a>
-            <a href="#">Rekisteröidy</a>
+            <a href="register.php">Rekisteröidy</a>
             <?php endif; ?>
-            </p>        
-        </div>
+            </p>    
+            </div>
         </nav>
         </div>
       </div>
              <br><br><br><br><br><br><br>
-               <?php if (!empty($data->virhe)): ?>
-               <div class="alert alert-danger"><?php echo $data->virhe; ?></div>
-               <?php endif; ?>
+               
                <?php if (!empty($_SESSION['ilmoitus'])): ?>
                 <div class="alert alert-danger">      
                 <?php echo $_SESSION['ilmoitus']; ?>

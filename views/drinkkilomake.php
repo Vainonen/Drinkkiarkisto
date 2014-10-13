@@ -34,7 +34,7 @@
           <input type="text" class="form-control" id="inputValmistustavat1" name="valmistustapa">
         </div>
       </div>
-              
+  
        <?php for ($i=0; $i<5; $i++): ?>
         <div class="form-group">
           <label for="ainesosat" class="col-md-2 control-label"><?php if ($i==0) echo 'Ainesosat (täytä vähintään yksi näistä)';?></label>       
@@ -54,7 +54,7 @@
         <br>
       <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-          <button type="submit" class="btn btn-default">Tallenna resepti</button>
+          <button type="submit" class="btn btn-default" name="tallenna" value="uusi">Tallenna resepti</button>
         </div>
       </div>
         

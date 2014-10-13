@@ -28,9 +28,12 @@
           <button type="submit" class="btn btn-default">Kirjaudu sisään</button>
         </div>
       </div>
+      <div>
+            Eikö sinulla ole tunnuksia ja salasanaa? <a href="register.php">Rekisteröidy.</a>
+      </div>
     </form>
   </div>
  
-<?php if (!empty($data->virhe)): ?>
+<?php if (!empty($data->virheet)): ?>
   <div class="alert alert-danger"><?php echo $data->virhe; ?></div>
 <?php endif; ?>

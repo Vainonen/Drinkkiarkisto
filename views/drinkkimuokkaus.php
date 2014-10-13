@@ -2,7 +2,7 @@
         
     <h2>Muokkaa drinkkireseptiä</h2>
     <?php foreach($data->drinkki as $drinkki): ?>
-    <form class="form-horizontal" role="form" action="muokkaus.php?drinkki_id=<?php echo $drinkki->getDrinkkiId() ?>" method="POST">
+    <form class="form-horizontal" role="form" action="lisays.php?drinkki_id=<?php echo $drinkki->getDrinkkiId() ?>" method="POST">
       <div class="form-group">
         <label for="nimi" class="col-md-2 control-label">Drinkin nimi</label>
         <div class="col-md-10">
@@ -35,19 +35,29 @@
           <input type="text" class="form-control" id="inputValmistustavat1" name="valmistustapa" value="<?php echo $drinkki->getValmistustapa(); ?>">
         </div>
       </div>
-        <!--
-      <div class="form-group">
-        <label for="ainesosa" class="col-md-2 control-label">Ainesosa </label>
-        <div class="col-md-10">
-          <input type="text" class="form-control" id="inputAinesosa1">
-          <button type="button" class="btn btn-default">Lisää aineksia</button>
-        </div>
-      </div>
-        -->
+      
+    
+      <?php foreach($data->ainesosat as $ainesosa): ?>
+            <div class="form-group">
+                <label for="ainesosat" class="col-md-2 control-label"><?php if ($i==0) echo 'Ainesosat (täytä vähintään yksi näistä)';?></label>       
+            <div class="control-label col-xs-1">
+                <input type="text" class="form-control" id="inputTilavuus" name="tilavuus[]" value="<?php echo $ainesosa->getTilavuus();?>">
+            </div>
+            <label for="tilavuus[]" class="control-label">senttilitraa  </label>
+            <select name="raakaaine[]">
+                <option value="<?php $ainesosa->getAineId(); ?>" selected="selected"><?php echo $ainesosa->getNimi(); ?></option>
+                    <?php foreach(Raakaaine::etsiKaikkiRaakaaineet() as $raakaaine): ?>
+                         <option value="<?php echo $raakaaine->getAineId();?>"><?php echo $raakaaine->getNimi(); ?></option>
+                    <?php endforeach; ?>
+                </select>  
+            </div> 
+      <?php endforeach; ?>
+
         
+     
       <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-          <button type="submit" class="btn btn-default" name="tallenna" value="tallenna">Tallenna resepti</button>
+          <button type="submit" class="btn btn-default" name="tallenna" value="vanha">Tallenna resepti</button>
           
         </div>
       </div>

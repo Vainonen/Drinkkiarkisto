@@ -2,7 +2,9 @@
         
     <h2>Käyttäjät</h2>
    
+ 
 <div class="kayttaja">
+    <form class="form-horizontal" role="form" action="kayttajakontrolleri.php" method="POST">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -25,13 +27,14 @@
                 echo "kyllä";
                 else echo "ei"; ?>
           </td>
-          <td><button type="button" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-pencil"></span></button></td>
+          <td><button type="submit" name="id" value="<?php echo $kayttaja->getId();?>" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-pencil"></span></button></td>
         </tr>
         <?php endforeach; ?>
       </tbody>
     </table>
+    </form>
 
-<br><br>
+    <br><br>
 <?php if ($data->sivu > 1): ?>
 <a href="usershow.php?sivu=<?php echo $data->sivu - 1; ?>">Edellinen sivu</a>
 <?php endif; ?>
