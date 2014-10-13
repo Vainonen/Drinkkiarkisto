@@ -7,6 +7,7 @@ class Drinkki {
   private $aliakset;
   private $drinkkityyppi;
   private $valmistustapa;
+  private $virheet;
   
   public function __construct($drinkki_id, $nimi, $aliakset, $drinkkityyppi, $valmistustapa, $ainesosat, $virheet) {
     $this->drinkki_id = $drinkki_id;
@@ -119,13 +120,38 @@ public function setValmistustapa($valmistustapa) {
         $drinkki->setDrinkkityyppi($tulos->drinkkityyppi);
         $drinkki->setValmistustapa($tulos->valmistustapa);
 
-    //$array[] = $muuttuja; lisää muuttujan arrayn perään. 
-    //Se vastaa melko suoraan ArrayList:in add-metodia.
-    $tulokset[] = $drinkki;
+        $tulokset[] = $drinkki;
   }
   return $tulokset;
 }
+   /* etsii drinkit ainesosien mukaan Aines-osat välitaulun kautta */
+  public static function etsiDrinkitAineksella($raakaaine_id) {
+    $sql = "SELECT drinkit.drinkki_id, drinkit.nimi, aliakset, drinkkityyppi, valmistustapa " 
+            . "FROM drinkit JOIN ainesosat ON drinkit.drinkki_id=ainesosat.drinkki_id JOIN raakaaineet ON raakaaineet.raakaaine_id=ainesosat.raakaaine_id "
+            . "WHERE ainesosat.raakaaine_id=? ORDER by nimi";
+    $kysely = getTietokantayhteys()->prepare($sql); $kysely->execute(array($raakaaine_id));
+    
+    $tulokset = array();
+    foreach($kysely->fetchAll(PDO::FETCH_OBJ) as $tulos) {
+        $drinkki = new Drinkki();
+        $drinkki->setDrinkkiId($tulos->drinkki_id);
+        $drinkki->setNimi($tulos->nimi);
+        $drinkki->setAliakset($tulos->aliakset);
+        $drinkki->setDrinkkityyppi($tulos->drinkkityyppi);
+        $drinkki->setValmistustapa($tulos->valmistustapa);
 
+        $tulokset[] = $drinkki;
+    }
+    return $tulokset;
+  }
+  /* getteri ainesten esiintymien määrälle eri drinkeissä */
+  public static function aineslukumaara($raakaaine_id) {
+    $sql = "SELECT count(*) FROM ainesosat JOIN raakaaineet ON raakaaineet.raakaaine_id=ainesosat.raakaaine_id WHERE $raakaaine_id=?";
+    $kysely = getTietokantayhteys()->prepare($sql);
+    $kysely->execute();
+    return $kysely->fetchColumn();
+    }
+    
   /* getteri drinkkien lukumäärälle */
   public static function lukumaara() {
     $sql = "SELECT count(*) FROM drinkit";
@@ -158,12 +184,15 @@ public function setValmistustapa($valmistustapa) {
   /* lisää reseptin postgresql-tietokantaan, joka huolehtii drinkki_id-muuttujan 
      lisäämisestä */
   public function lisaaKantaan() {
-    $sql = "INSERT INTO drinkit (nimi, aliakset, drinkkityyppi, valmistustapa) VALUES(?,?,?,?)";
+    $sql = "SELECT max(drinkki_id)+1 FROM drinkit";
+    $kysely = getTietokantayhteys()->prepare($sql);
+    $kysely->execute();
+    $luku = $kysely->fetchColumn();
+    $sql = "INSERT INTO drinkit (drinkki_id, nimi, aliakset, drinkkityyppi, valmistustapa) VALUES ($luku,?,?,?,?)";
     $kysely = getTietokantayhteys()->prepare($sql); 
     $ok = $kysely->execute(array($this->getNimi(), $this->getAliakset(), $this->getDrinkkityyppi(), $this->getValmistustapa())); 
-    if ($ok)  $this->drinkki_id = $kysely->fetchColumn();
-    
-    return $ok;
+ 
+    return $luku;
   }
    
     /* päivittää tietokantaan muutokset drinkki_id-indeksinumeron perusteella */

@@ -9,55 +9,75 @@ class Kayttaja {
   private $adminoikeus;
   private $virheet;
   
-  public function __construct($id, $tunnus, $salasana, $muokkausoikeus, $adminoikeus) {
-$this->id = $id;
-$this->tunnus = $tunnus;
-$this->salasana = $salasana;
-$this->muokkausoikeus = $muokkausoikeus;
-$this->adminoikeus = $adminoikeus;
-}
+  public function __construct($kayttaja_id, $tunnus, $salasana, $muokkausoikeus, $adminoikeus) {
+    $this->kayttaja_id = $kayttaja_id;
+    $this->tunnus = $tunnus;
+    $this->salasana = $salasana;
+    $this->muokkausoikeus = $muokkausoikeus;
+    $this->adminoikeus = $adminoikeus;
+    $this->virheet = $virheet;
+  }
 
-/* gettereitä ja settereitä 
- * HUOM! VIRHEIDEN TARKISTUS PUUTTUU!
- */
+/* gettereitä ja settereitä */
 public function getId() {
-return $this->kayttaja_id;
+    return $this->kayttaja_id;
 }
 public function getTunnus() {
-return $this->tunnus;
+    return $this->tunnus;
 }
 public function getSalasana() {
-return $this->salasana;
+    return $this->salasana;
 }
 public function getMuokkausoikeus() {
-return $this->muokkausoikeus;
+    return $this->muokkausoikeus;
 }
 public function getAdminoikeus() {
-return $this->adminoikeus;
+    return $this->adminoikeus;
 }
-public function geVirheet() {
-return $this->virheet;
+public function getVirheet() {
+    return $this->virheet;
 }
 
 public function setId($kayttaja_id) {
-$this->kayttaja_id = $kayttaja_id;
+    $this->kayttaja_id = $kayttaja_id;
 }
 public function setTunnus($tunnus) {
-$this->tunnus = $tunnus;
+    if (Kayttaja::onkoTunnusta($tunnus)) $this->virheet['tunnus'] = "Tunnus on jo käytössä, käytä jotain toista tunnusta!";
+    $this->tunnus = $tunnus;
 }
 public function setSalasana($salasana) {
-$this->salasana = $salasana;
+    if (strlen($salasana)<8) $this->virheet['salasana'] = "Salasanassa täytyy olla vähintään 8 merkkiä!";
+    $this->salasana = $salasana;
 }
 public function setMuokkausoikeus($muokkausoikeus) {
-$this->muokkausoikeus = $muokkausoikeus;
+    $this->muokkausoikeus = $muokkausoikeus;
 }
 public function setAdminoikeus($adminoikeus) {
-$this->adminoikeus = $adminoikeus;
+    $this->adminoikeus = $adminoikeus;
 }
 public function setVirheet($virheet) {
-$this->virheet = $virheet;
+    $this->virheet = $virheet;
 }
+  
+  /* etsii käyttäjän käyttäjän tietokantaindeksillä */
+  public static function etsiKayttajaIndeksilla($kayttaja_id) {
+    $sql = "SELECT kayttaja_id, tunnus, salasana, muokkausoikeus, adminoikeus FROM kayttajat WHERE kayttaja_id = ? LIMIT 1";
+    $kysely = getTietokantayhteys()->prepare($sql);
+    $kysely->execute(array($kayttaja_id));
 
+    $tulos = $kysely->fetchObject();
+    if ($tulos == null) {
+      return null;
+    } else {
+      $kayttaja = new Kayttaja(); 
+      $kayttaja->setId($tulos->kayttaja_id);
+      $kayttaja->setTunnus($tulos->tunnus);
+      $kayttaja->setSalasana($tulos->salasana);
+      $kayttaja->setMuokkausoikeus($tulos->muokkausoikeus);
+      $kayttaja->setAdminoikeus($tulos->adminoikeus);
+      return $kayttaja;
+    }
+  }
   /* etsii käyttäjän käyttäjätunnuksen ja salasanan mukaan */
   public static function etsiKayttajaTunnuksilla($kayttaja, $salasana) {
     $sql = "SELECT kayttaja_id, tunnus, salasana, muokkausoikeus, adminoikeus FROM kayttajat WHERE tunnus = ? AND salasana = ? LIMIT 1";
@@ -76,6 +96,17 @@ $this->virheet = $virheet;
       $kayttaja->setAdminoikeus($tulos->adminoikeus);
       return $kayttaja;
     }
+  }
+  
+  /* varmistaa, ettei samaa käyttäjätunnusta ole jo tietokannasta */
+  public static function onkoTunnusta($tunnus) {
+    $sql = "SELECT tunnus FROM kayttajat WHERE tunnus = ?";
+    $kysely = getTietokantayhteys()->prepare($sql);
+    $kysely->execute(array($tunnus));
+
+    $tulos = $kysely->fetchObject();
+    if ($tulos == null) return false;
+    else return true;
   }
      
    /* getteri näkymää varten, parametreinä sivunumero ja sivulla esitettävien
@@ -126,32 +157,23 @@ $this->virheet = $virheet;
   return $tulokset;
 }
 
-  /* käyttäjän rekisteröitymistä varten:
-   * tarkistaa ensin, ettei samaa tunnusta löydy tietokannasta (KESKENERÄINEN)
-   */
-  public function lisaaKantaan($kayttaja) {
-    $sql = "SELECT kayttaja_id, tunnus, salasana, muokkausoikeus, adminoikeus from kayttajat where tunnus = ?";
+  /* käyttäjän rekisteröitymistä varten */
+  public function lisaaKantaan() {
+    $sql = "SELECT max(kayttaja_id)+1 FROM kayttajat";
     $kysely = getTietokantayhteys()->prepare($sql);
-    $kysely->execute(array($kayttaja, $salasana));
-    $tulos = $kysely->fetchObject();
-    if ($tulos != null) return false;
-    else {
-    $sql = "INSERT INTO kayttaja (tunnus, salasana, muokkausoikeus, adminoikeus) VALUES(?,?,false,false)";
+    $kysely->execute();
+    $luku = $kysely->fetchColumn();
+    $sql = "INSERT INTO kayttajat (kayttaja_id, tunnus, salasana) VALUES ($luku,?,?)";
     $kysely = getTietokantayhteys()->prepare($sql); 
-    $ok = $kysely->execute(array($this->getTunnus(), $this->getSalasana(), $this->getMuokkausoikeus(), $this->getAdminoikeus())); 
-    if ($ok)  $this->drinkki_id = $kysely->fetchColumn();
-    
+    $ok = $kysely->execute(array($this->getTunnus(), $this->getSalasana())); 
     return $ok;
-    }
   }
    
-    /* päivittää tietokantaan moderointi- ja reseptimuokkausoikeuksen muutokset (KESKENERÄINEN)
-     * HUOM! PITÄÄ LISÄTÄ TARKISTUS, ETTÄ MODERAATTORI EI VOI POISTAA OMIA OIKEUKSIAAN!
-     */
-    public function annaMuokkausoikeudet($kayttaja_id) {
-        $sql = "UPDATE kayttajat SET tunnus = ?, salasana = ?, muokkausoikeus = ?, adminoikeus = ? WHERE kayttaja_id = $kayttaja_id";
+    /* päivittää tietokantaan moderointi- ja reseptimuokkausoikeuksen muutokset */
+    public function muokkaOikeuksia($kayttaja_id) {
+        $sql = "UPDATE kayttajat SET muokkausoikeus = ?, adminoikeus = ? WHERE kayttaja_id = $kayttaja_id";
         $kysely = getTietokantayhteys()->prepare($sql);
-        $ok = $kysely->execute(array($this->getTunnus(), $this->getSalasana(), $this->getMuokkausoikeus(), $this->getAdminoikeus()));
+        $ok = $kysely->execute(array($this->getMuokkausoikeus(), $this->getAdminoikeus()));
         return $ok;
     }
     
