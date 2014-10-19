@@ -22,7 +22,10 @@ public function getVirheet() {
 }
 
 public function setAineId($raakaaine_id) {
-    if (empty($raakaaine_id)) $this->virheet['raakaaine'] = "Raaka-aineella on annettava nimi!";
+    if (empty($raakaaine_id)) $this->virheet['raakaaine'] = "Ainesosalle on annettava nimi!";
+    else {
+        unset($this->virheet['raakaaine']);
+    }
     $this->raakaaine_id = $raakaaine_id;
 }
 public function setNimi($nimi) {
@@ -30,14 +33,15 @@ public function setNimi($nimi) {
 }
 public function setTilavuus($tilavuus) {
     $this->tilavuus = $tilavuus;
-    if (!is_numeric($tilavuus)) $this->virheet['tilavuus'] = "Tilavuuden täytyy olla numero, käytä pistettä desimaaliluvuissa!";
+    if (empty($tilavuus) || $tilavuus<=0 || $tilavuus >100) $this->virheet['tilavuus'] = "Ainesosalle on annettava tilavuus välillä 0-100!";
+    if (!is_numeric($tilavuus)) $this->virheet['tilavuus'] = "Ainesosan tilavuuden täytyy olla numero, käytä pistettä desimaaliluvuissa!";
 }
 
   /* Etsii listan kaikista raaka-aineista, navigaatiopalkin 
    * Ainesosat-listausnäkymää varten
    */
   public static function etsiKaikkiRaakaaineet() {
-    $sql = "SELECT raakaaine_id, nimi FROM raakaaineet";
+    $sql = "SELECT raakaaine_id, nimi FROM raakaaineet ORDER BY nimi";
     $kysely = getTietokantayhteys()->prepare($sql); $kysely->execute();
     
     $tulokset = array();
@@ -79,7 +83,7 @@ public function setTilavuus($tilavuus) {
     $kysely->execute();
     return $kysely->fetchColumn();
     }
-
+    
   /* lisää yhden aineksen Ainesosat-välitauluun, parametriksi pitää antaa drinkki- ja raakaaine-taulukkojen id-tunnus */
   public function lisaaAineJuomaan($drinkki_id, $raakaaine_id) {
     $sql = "INSERT INTO ainesosat (tilavuus, drinkki_id, raakaaine_id) VALUES(?,?,?)";

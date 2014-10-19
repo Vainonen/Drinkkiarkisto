@@ -35,8 +35,8 @@ require_once 'libs/models/kayttaja.php';
 $uusi = new Kayttaja();
 $uusi->setTunnus(sanitoi($_POST['username']));
 $uusi->setSalasana(sanitoi($_POST['password1']));
-$uusi->setMuokkausoikeus(false);
-$uusi->setAdminoikeus(false);
+$uusi->setMuokkausoikeus(0);
+$uusi->setAdminoikeus(0);
   
   if ($uusi->onkoKelvollinen()) {
   $uusi->lisaaKantaan();

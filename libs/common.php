@@ -22,25 +22,25 @@
   
   /* Tarkistaa onko käyttäjällä oikeus muokauta drinkkireseptejä */
   function oikeusMuokata() {
-      if (isset($_SESSION['muokkausoikeus']))
+      if (($_SESSION['muokkausoikeus'])==1)
     return true;
     else return false;
   }
   
   /* Tarkistaa onko käyttäjällä oikeus muokata muiden käyttäjien tietoja */
   function oikeusModeroida() {
-      if (isset($_SESSION['adminoikeus']))
+      if (($_SESSION['adminoikeus'])==1)
     return true;
     else return false;
   }
   
   /* Käyttäjän uloskirjautuminen, tietojen ja evästeen poistaminen sessiosta */
   function kirjauduUlos () {
-      session_start();
+      
       $_SESSION = array();
       setcookie(session_name(), '', time() - 2592000, '/');
       session_destroy();
-  header('Location: login.php');
+  header('Location: index.php');
   }
   
   /* huolehtii käyttäjän syötteiden puhdistamisesta */

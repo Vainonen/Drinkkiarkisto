@@ -5,19 +5,10 @@ class Kayttaja {
   private $kayttaja_id;
   private $tunnus;
   private $salasana;
-  private $muokkausoikeus;
-  private $adminoikeus;
+  private $muokkausoikeus; // integer-arvo 0 tai 1 totuusarvona
+  private $adminoikeus;    // integer-arvo 0 tai 1 totuusarvona
   private $virheet;
   
-  public function __construct($kayttaja_id, $tunnus, $salasana, $muokkausoikeus, $adminoikeus) {
-    $this->kayttaja_id = $kayttaja_id;
-    $this->tunnus = $tunnus;
-    $this->salasana = $salasana;
-    $this->muokkausoikeus = $muokkausoikeus;
-    $this->adminoikeus = $adminoikeus;
-    $this->virheet = $virheet;
-  }
-
 /* gettereitä ja settereitä */
 public function getId() {
     return $this->kayttaja_id;
@@ -163,29 +154,27 @@ public function setVirheet($virheet) {
     $kysely = getTietokantayhteys()->prepare($sql);
     $kysely->execute();
     $luku = $kysely->fetchColumn();
-    $sql = "INSERT INTO kayttajat (kayttaja_id, tunnus, salasana) VALUES ($luku,?,?)";
+    $sql = "INSERT INTO kayttajat (kayttaja_id, tunnus, salasana, muokkausoikeus, adminoikeus) VALUES (?,?,?,?,?)";
     $kysely = getTietokantayhteys()->prepare($sql); 
-    $ok = $kysely->execute(array($this->getTunnus(), $this->getSalasana())); 
+    $ok = $kysely->execute(array($luku, $this->getTunnus(), $this->getSalasana(), $this->getMuokkausoikeus(), $this->getAdminoikeus())); 
     return $ok;
   }
    
     /* päivittää tietokantaan moderointi- ja reseptimuokkausoikeuksen muutokset */
-    public function muokkaOikeuksia($kayttaja_id) {
-        $sql = "UPDATE kayttajat SET muokkausoikeus = ?, adminoikeus = ? WHERE kayttaja_id = $kayttaja_id";
+    public function muokkaaOikeuksia($kayttaja_id) {
+        $sql = "UPDATE kayttajat SET muokkausoikeus = ?, adminoikeus = ? WHERE kayttaja_id = ?";
         $kysely = getTietokantayhteys()->prepare($sql);
-        $ok = $kysely->execute(array($this->getMuokkausoikeus(), $this->getAdminoikeus()));
-        return $ok;
+        $kysely->execute(array($this->getMuokkausoikeus(), $this->getAdminoikeus(), $kayttaja_id));
     }
     
-    /* metodi vaihtaa salasanan, joka moderaattorin tai käyttäjän kutsumana (KESKENERÄINEN) */
+    /* metodi vaihtaa salasanan, joka moderaattorin tai käyttäjän kutsumana */
     public function vaihdaSalasanaa($kayttaja_id) {
-        $sql = "UPDATE kayttajat SET salasana = ? WHERE kayttaja_id = $kayttaja_id";
+        $sql = "UPDATE kayttajat SET salasana = ? WHERE kayttaja_id = ?";
         $kysely = getTietokantayhteys()->prepare($sql);
-        $ok = $kysely->execute(array($this->getTunnus(), $this->getSalasana(), $this->getMuokkausoikeus(), $this->getAdminoikeus()));
-        return $ok;
+        $kysely->execute(array($this->getSalasana(), $kayttaja_id));
     }
    
-   /* metodi poistaa käyttäjätiedot, joka moderaattorin tai käyttäjän kutsumana (KESKENERÄINEN)*/
+   /* metodi poistaa käyttäjätiedot, joka moderaattorin tai käyttäjän kutsumana */
    public function poistaKayttaja($kayttaja_id) {
     $sql = "DELETE FROM kayttajat WHERE kayttaja_id = $kayttaja_id";
     $kysely = getTietokantayhteys()->prepare($sql);

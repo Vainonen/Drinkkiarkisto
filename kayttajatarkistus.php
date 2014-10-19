@@ -26,8 +26,8 @@ require_once 'libs/models/kayttaja.php';
   /* Tarkistetaan onko parametrina saatu oikeat tunnukset */
   if ($kayttaja != null) {
     $_SESSION['kirjautunut'] = $kayttaja;
-    if ($kayttaja->getMuokkausoikeus()==true) $_SESSION['muokkausoikeus'] = true;
-    if ($kayttaja->getAdminoikeus()==true) $_SESSION['adminoikeus'] = true;
+    if ($kayttaja->getMuokkausoikeus()==1) $_SESSION['muokkausoikeus'] = true;
+    if ($kayttaja->getAdminoikeus()==1) $_SESSION['adminoikeus'] = true;
     $_SESSION['kayttajatunnus'] = $kayttaja->getTunnus();
     $_SESSION['id'] = $kayttaja->getId();
     header('Location: drinkit.php');

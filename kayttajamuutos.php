@@ -6,30 +6,32 @@ require_once 'libs/models/kayttaja.php';
 
 if (!oikeusModeroida()) {
 naytaNakyma('kirjautuminen.php', array(
-      'virhe' => "Sinulla ei ole lupaa tälle sivulle!",
+      'virhe' => "Sinulla ei ollut lupaa edelliselle sivulle!",
 ));}
 
-if ($_SESSION['id'] == (sanitoi($_GET['kayttaja_id']))) 
-    {naytaNakyma('usershow.php', array(
-      'virhe' => "Et voi poistaa tai muokata omia oikeuksiasi!",
-    ));}
-    
+$id = sanitoi((int)$_GET['kayttaja_id']);
+$muokkausoikeus = sanitoi($_POST['muokkausoikeus']);
+$adminoikeus = sanitoi($_POST['adminoikeus']);
+
 if (sanitoi($_POST['tallenna'])=="tallenna") {
     
 $uusi = new Kayttaja();
-$uusi->setMuokkausoikeus(sanitoi($_POST['aliakset']));
-$uusi->setAdminoikeus(sanitoi($_POST['drinkkityyppi']));
+if ($muokkausoikeus==1) $uusi->setMuokkausoikeus(1);
+else $uusi->setMuokkausoikeus(0);
+if ($adminoikeus==1) $uusi->setAdminoikeus(1);
+else $uusi->setAdminoikeus(0);
+$uusi->setSalasana(sanitoi($_POST['salasana']));
 
 if ($uusi->onkoKelvollinen()) {
-  $uusi->muokkaaOikeuksia(sanitoi($_GET['drinkki_id']));  
-  header('Location: usershow.php');
+  $uusi->muokkaaOikeuksia($id);
+  $uusi->vaihdaSalasanaa($id);
+  header('Location: kayttajat.php');
   $_SESSION['ilmoitus'] = "Käyttäjäoikeuksia muokattu onnistuneesti.";
 
 } else {
   $virheet = $uusi->getVirheet();
- foreach($taulukko->virheet as $virhe)
+  foreach($taulukko->virheet as $virhe)
  {echo $taulukko->virhe;}
-  //Virheet voidaan nyt välittää näkymälle syötettyjen tietojen kera
   naytaNakyma ("kayttajatieto.php", array(
     'kayttaja' => $uusi,
     'virheet' => $virheet
@@ -41,7 +43,7 @@ if (sanitoi($_POST['tallenna'])=="poista") {
     if (oikeusModeroida()) {
     //Koodia, jonka vain kirjautunut käyttäjä saa suorittaa
     Kayttaja::poistaKayttaja(sanitoi($_GET['kayttaja_id']));
-    header('Location: usershow.php');
+    header('Location: kayttajat.php');
     //Asetetaan istuntoon ilmoitus siitä, että drinkki on lisätty.
     $_SESSION['ilmoitus'] = "Käyttäjä poistettu onnistuneesti.";
     } 

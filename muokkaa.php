@@ -9,15 +9,15 @@ require_once 'libs/models/raakaaine.php';
 
  if (oikeusMuokata()) {
     //Koodia, jonka vain kirjautunut käyttäjä saa suorittaa
- $drinkki = Drinkki::etsi(sanitoi($_GET['drinkki_id']));
- $ainesosat = Raakaaine::etsiAinesosat(sanitoi($_GET['drinkki_id']));
- $luku = Raakaaine::lukumaara(sanitoi($_GET['drinkki_id']));
-         
+ $drinkki = Drinkki::etsi(sanitoi($_POST['id']));
+ $ainesosat = Raakaaine::etsiAinesosat(sanitoi($_POST['id']));
+ $luku = Raakaaine::lukumaara(sanitoi($_POST['id']));
+ 
   if ($drinkki != null) {
   naytaNakyma("drinkkimuokkaus.php", array(
     'drinkki' => $drinkki,
     'ainesosat' => $ainesosat,
-    'luku' => $luku  
+    'luku' => $luku,
   ));}
   else {
   naytaNakyma("drinkkimuokkaus.php", array(

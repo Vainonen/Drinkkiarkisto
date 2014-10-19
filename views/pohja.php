@@ -9,52 +9,60 @@
         <link href="css/main.css" rel="stylesheet">
     </head>
     <body>
-         <div class="container">
-    <div class="row">
-      <div class="col-md-3">      
-        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-            <h2><a href="index.php">DRINKKIARKISTO</a></h2>
-        <div class="container">
-            <h3>
-            <a href="#">Drinkkityypit |</a>
-            <a href="ainekset.php"> Ainesosat |</a>
-            <a href="drinkit.php"> Listaa kaikki |</a>
-            <a href="insert.php"> Lisää drinkki</a> 
-            <?php if (oikeusModeroida()): ?>
-                <a href="usershow.php">| Käyttäjät</a>      
-            <?php endif; ?>
-            </h3>
-            <p style="text-align:right">
+  <nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.php">Drinkkiarkisto</a>
+    </div>
 
-            <?php if (kirjautunutko()): ?>
-                <?php echo $_SESSION['kayttajatunnus']; ?>
-                <a href="logout.php">Kirjaudu ulos</a>      
-            <?php endif; ?>
-            <?php if (!kirjautunutko()): ?>
-            <a href="login.php">Kirjaudu |</a>
-            <a href="register.php">Rekisteröidy</a>
-            <?php endif; ?>
-            </p>    
-            </div>
-        </nav>
-        </div>
-      </div>
-             <br><br><br><br><br><br><br>
-               
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="ainekset.php">Ainesosat</a></li>
+        <li><a href="drinkit.php">Kaikki drinkit</a></li> 
+        <?php if (kirjautunutko() && !oikeusMuokata()): ?>
+        <li><a href="lisaa.php?ehdotus=1">Tee reseptiehdotus</a></li>  
+        <?php endif; ?>
+        <?php if (oikeusMuokata()): ?>
+        <li><a href="lisaa.php">Lisää drinkki</a></li>
+        <li><a href="drinkit.php?ehdotus=1">Reseptiehdotukset</a></li> 
+        <?php endif; ?>
+        <?php if (oikeusModeroida()): ?>
+        <li><a href="kayttajat.php">Käyttäjät</a></li>      
+        <?php endif; ?>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <?php if (kirjautunutko()): ?>
+        <li><?php echo $_SESSION['kayttajatunnus']; ?></li>
+        <li><a href="poistu.php">Kirjaudu ulos</a></li>    
+        <?php endif; ?>
+        <?php if (!kirjautunutko()): ?>
+        <li><a href="kirjaudu.php">Kirjaudu</a></li>
+        <li><a href="rekisteroidy.php">Rekisteröidy</a></li>
+        <?php endif; ?>         
+      </ul>
+    </div>
+  </div>
+</nav>
+
                <?php if (!empty($_SESSION['ilmoitus'])): ?>
-                <div class="alert alert-danger">      
+                <div class="alert alert-success">      
                 <?php echo $_SESSION['ilmoitus']; ?>
                 </div>
                 <?php
                 // Samalla kun viesti näytetään, se poistetaan istunnosta,
                 // ettei se näkyisi myöhemmin jollain toisella sivulla uudestaan.
                 unset($_SESSION['ilmoitus']); ?>
-                <?php endif;?>
-               
+                <?php endif;?>             
                <?php            
                require_once 'views/'.$sivu;
                ?>
-       </div>
-              
+                  
 </body>
 </html>
